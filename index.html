@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Catalogo Drive</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f7a4d'/%3E%3Cpath d='M8 11h16v12H8z' fill='white'/%3E%3Cpath d='M10 8h12l2 3H8z' fill='%23d9f0e4'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Catalogo sincronizado</p>
+        <h1>Estoque do fornecedor</h1>
+      </div>
+      <div class="top-actions">
+        <a class="icon-link" href="https://drive.google.com/drive/folders/1E6XqPMoxn-xq36Kf4wVkYW3JlupTyjIU" target="_blank" rel="noreferrer" title="Abrir Drive">
+          <i data-lucide="folder-open"></i>
+        </a>
+        <button class="icon-link" id="cartButton" type="button" title="Pedido">
+          <i data-lucide="shopping-bag"></i>
+          <span id="cartCount">0</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="toolbar" aria-label="Filtros do catalogo">
+        <label class="search">
+          <i data-lucide="search"></i>
+          <input id="searchInput" type="search" placeholder="Buscar produto, marca ou pasta" autocomplete="off" />
+        </label>
+        <select id="categoryFilter" aria-label="Categoria"></select>
+        <select id="sizeFilter" aria-label="Tamanho"></select>
+        <select id="brandFilter" aria-label="Marca"></select>
+      </section>
+
+      <section class="metrics" aria-label="Resumo">
+        <div>
+          <strong id="totalProducts">0</strong>
+          <span>pecas listadas</span>
+        </div>
+        <div>
+          <strong id="visibleProducts">0</strong>
+          <span>no filtro atual</span>
+        </div>
+        <div>
+          <strong id="pendingPrices">0</strong>
+          <span>sem preco</span>
+        </div>
+      </section>
+
+      <section class="catalog" id="catalogGrid" aria-label="Produtos"></section>
+    </main>
+
+    <aside class="drawer" id="cartDrawer" aria-label="Pedido" aria-hidden="true">
+      <div class="drawer-head">
+        <div>
+          <p class="eyebrow">Pedido</p>
+          <h2>Itens separados</h2>
+        </div>
+        <button class="icon-link" id="closeCart" type="button" title="Fechar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="cart-list" id="cartList"></div>
+      <a class="whatsapp-main" id="whatsappOrder" href="https://wa.me/" target="_blank" rel="noreferrer">
+        <i data-lucide="message-circle"></i>
+        Enviar no WhatsApp
+      </a>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+
+    <script src="./vendor/lucide.min.js"></script>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

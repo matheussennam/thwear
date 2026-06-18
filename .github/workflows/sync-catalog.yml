@@ -1,0 +1,37 @@
+name: Sync catalog
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 07:00 BRT / America-Bahia
+    - cron: "0 10 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Sync Google Drive catalog
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: node scripts/drive-sync.mjs --root 1E6XqPMoxn-xq36Kf4wVkYW3JlupTyjIU --out data/catalog.json
+
+      - name: Commit catalog changes
+        run: |
+          if git diff --quiet -- data/catalog.json; then
+            echo "No catalog changes"
+            exit 0
+          fi
+          git config user.name "catalog-sync"
+          git config user.email "catalog-sync@users.noreply.github.com"
+          git add data/catalog.json
+          git commit -m "Atualiza catalogo do Drive"
+          git push
