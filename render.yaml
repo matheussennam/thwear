@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: catalogo-drive-fornecedor
+    name: thwear
     runtime: static
     plan: free
     branch: main

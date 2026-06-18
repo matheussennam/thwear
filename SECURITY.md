@@ -19,7 +19,7 @@ Este catalogo e um site estatico. Ele nao recebe login, senha, pagamento ou dado
 
 O site publicado como Static Site fica atras de CDN no Render ou no GitHub Pages. Isso e mais resistente a picos de acesso do que um servidor proprio pequeno.
 
-A automacao diaria de Drive nao fica exposta publicamente; ela roda em GitHub Actions com credenciais em secrets. Se o volume de fotos crescer muito, a proxima protecao e processar apenas arquivos alterados desde a ultima sincronizacao.
+A automacao horaria de Drive nao fica exposta publicamente; ela roda em GitHub Actions com credenciais em secrets. Se o volume de fotos crescer muito, a proxima protecao e processar apenas arquivos alterados desde a ultima sincronizacao.
 
 ## Segredos
 

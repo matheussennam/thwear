@@ -1,6 +1,6 @@
-# Catalogo Drive MVP
+# thwear
 
-MVP local para transformar a pasta do fornecedor no Google Drive em um catalogo visual com filtros e pedido por WhatsApp.
+MVP local para transformar a pasta do fornecedor no Google Drive em um catalogo visual da thwear, com filtros e pedido por WhatsApp.
 
 ## Como rodar
 
@@ -57,7 +57,7 @@ Abra:
 
 Exemplo:
 
-`https://dashboard.render.com/blueprint/new?repo=https://github.com/usuario/catalogo-drive`
+`https://dashboard.render.com/blueprint/new?repo=https://github.com/usuario/thwear`
 
 ## Fallback: GitHub Pages
 
@@ -78,16 +78,16 @@ cd /Users/senna/Documents/Codex/2026-06-18/files-mentioned-by-the-user-audio/out
 GOOGLE_ACCESS_TOKEN=... node scripts/drive-sync.mjs --root 1E6XqPMoxn-xq36Kf4wVkYW3JlupTyjIU --out data/catalog.json
 ```
 
-Para producao, o repo inclui `.github/workflows/sync-catalog.yml`, que roda todo dia as 07:00 BRT e tambem pode ser disparado manualmente.
+Para producao, o repo inclui `.github/workflows/sync-catalog.yml`, que roda de hora em hora e tambem pode ser disparado manualmente.
 
 Configure o secret `GOOGLE_SERVICE_ACCOUNT_JSON` no GitHub com uma service account do Google. A pasta do fornecedor precisa ser compartilhada com o e-mail dessa service account.
 
-Esse job diario:
+Esse job horario:
 
 1. ler a arvore completa do Drive;
 2. gerar registros novos para imagens novas;
 3. marcar como indisponiveis imagens removidas;
 4. commitar mudancas em `data/catalog.json`;
-5. disparar novo deploy automatico no Render.
+5. disparar novo deploy automatico no GitHub Pages/Render.
 
 A etapa de IA de visao para descricao, cor, marca provavel e qualidade da foto entra como proximo passo, usando uma chave de IA e salvando os campos enriquecidos no mesmo `catalog.json`.

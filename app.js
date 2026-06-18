@@ -1,6 +1,6 @@
 const state = {
   settings: {
-    businessName: "Loja do fornecedor",
+    businessName: "thwear",
     whatsappNumber: ""
   },
   products: [],

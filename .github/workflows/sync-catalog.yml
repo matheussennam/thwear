@@ -3,8 +3,8 @@ name: Sync catalog
 on:
   workflow_dispatch:
   schedule:
-    # 07:00 BRT / America-Bahia
-    - cron: "0 10 * * *"
+    # Every hour. GitHub cron runs in UTC.
+    - cron: "0 * * * *"
 
 permissions:
   contents: write
