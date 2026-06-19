@@ -11,6 +11,7 @@ const state = {
     query: "",
     category: "all",
     size: "all",
+    color: "all",
     brand: "all"
   }
 };
@@ -22,6 +23,7 @@ const els = {
   search: document.querySelector("#searchInput"),
   category: document.querySelector("#categoryFilter"),
   size: document.querySelector("#sizeFilter"),
+  color: document.querySelector("#colorFilter"),
   brand: document.querySelector("#brandFilter"),
   total: document.querySelector("#totalProducts"),
   visible: document.querySelector("#visibleProducts"),
@@ -68,6 +70,7 @@ async function init() {
 function hydrateFilters() {
   fillSelect(els.category, "Todas categorias", unique("category"));
   fillSelect(els.size, "Todos tamanhos", unique("size"));
+  fillSelect(els.color, "Todas cores", unique("color"));
   fillSelect(els.brand, "Todas marcas", unique("brand"));
 }
 
@@ -92,6 +95,7 @@ function bindEvents() {
   for (const [key, select] of [
     ["category", els.category],
     ["size", els.size],
+    ["color", els.color],
     ["brand", els.brand]
   ]) {
     select.addEventListener("change", (event) => {
@@ -112,6 +116,8 @@ function applyFilters() {
       product.category,
       product.brand,
       product.size,
+      product.color,
+      product.fileName,
       product.folderPath
     ].join(" ").toLowerCase();
 
@@ -119,6 +125,7 @@ function applyFilters() {
       (!state.filters.query || queryText.includes(state.filters.query)) &&
       (state.filters.category === "all" || product.category === state.filters.category) &&
       (state.filters.size === "all" || product.size === state.filters.size) &&
+      (state.filters.color === "all" || product.color === state.filters.color) &&
       (state.filters.brand === "all" || product.brand === state.filters.brand)
     );
   });
@@ -141,7 +148,7 @@ function renderCatalog() {
     return;
   }
 
-  els.grid.innerHTML = state.visible.map(renderProduct).join("");
+  els.grid.innerHTML = renderFolders(state.visible);
 
   els.grid.querySelectorAll("[data-add]").forEach((button) => {
     button.addEventListener("click", () => addToCart(button.dataset.add));
@@ -150,6 +157,23 @@ function renderCatalog() {
   if (window.lucide) {
     window.lucide.createIcons();
   }
+}
+
+function renderFolders(groups) {
+  return groupFolders(groups).map((folder) => `
+    <section class="folder-section">
+      <div class="folder-head">
+        <div>
+          <p class="eyebrow">Pasta</p>
+          <h2>${escapeHtml(folder.name)}</h2>
+        </div>
+        <span>${folder.pieces} peca${folder.pieces === 1 ? "" : "s"} · ${folder.groups.length} modelo${folder.groups.length === 1 ? "" : "s"}</span>
+      </div>
+      <div class="folder-grid">
+        ${folder.groups.map(renderProduct).join("")}
+      </div>
+    </section>
+  `).join("");
 }
 
 function renderProduct(product) {
@@ -167,9 +191,19 @@ function renderProduct(product) {
       </button>
     `;
   }).join("");
+  const colors = product.colors.map((color) => {
+    const item = product.items.find((variant) => variant.color === color) || cover;
+    const swatch = colorSwatch(color);
+    return `
+      <button class="color-pill" type="button" data-add="${item.id}" title="Separar cor ${escapeHtml(color)}">
+        <span class="swatch" style="${swatch}"></span>
+        ${escapeHtml(color)}
+      </button>
+    `;
+  }).join("");
 
   const message = encodeURIComponent(
-    `Oi! Tenho interesse neste item:\n\n${product.title}\nCategoria: ${product.category}\nTamanhos disponiveis: ${product.sizes.join(", ")}\nMarca: ${product.brand}\nLink: ${cover.driveUrl}`
+    `Oi! Tenho interesse neste item:\n\n${product.title}\nCategoria: ${product.category}\nTamanhos disponiveis: ${product.sizes.join(", ")}\nCores: ${product.colors.join(", ")}\nMarca: ${product.brand}\nLink: ${cover.driveUrl}`
   );
 
   return `
@@ -187,9 +221,12 @@ function renderProduct(product) {
         <div class="sizes" aria-label="Tamanhos disponiveis">
           ${sizes}
         </div>
+        <div class="colors" aria-label="Cores disponiveis">
+          ${colors}
+        </div>
         <div class="price">
           ${price}
-          <span class="chip">${product.sizes.length} tamanho${product.sizes.length === 1 ? "" : "s"}</span>
+          <span class="chip">${product.sizes.length} tam. · ${product.colors.length} cor${product.colors.length === 1 ? "" : "es"}</span>
         </div>
         <div class="actions">
           <a class="primary" href="${whatsappUrl(message)}" target="_blank" rel="noreferrer">
@@ -205,14 +242,31 @@ function renderProduct(product) {
   `;
 }
 
+function groupFolders(groups) {
+  const folders = new Map();
+
+  for (const group of groups) {
+    const key = group.folderName || group.category;
+    if (!folders.has(key)) {
+      folders.set(key, { name: key, groups: [], pieces: 0 });
+    }
+    const folder = folders.get(key);
+    folder.groups.push(group);
+    folder.pieces += group.items.length;
+  }
+
+  return [...folders.values()].sort((a, b) => a.name.localeCompare(b.name, "pt-BR", { numeric: true }));
+}
+
 function groupProducts(products) {
   const groups = new Map();
 
   for (const product of products) {
+    const folderName = folderLabel(product);
     const key = [
       product.category,
       product.brand,
-      product.folderPath.split("/")[0]?.trim() || product.title
+      folderName
     ].join("|");
 
     if (!groups.has(key)) {
@@ -221,9 +275,11 @@ function groupProducts(products) {
         title: product.title,
         category: product.category,
         brand: product.brand,
+        folderName,
         price: product.price,
         items: [],
-        sizes: []
+        sizes: [],
+        colors: []
       });
     }
 
@@ -237,8 +293,14 @@ function groupProducts(products) {
       return new Date(b.createdTime || 0) - new Date(a.createdTime || 0);
     });
     group.sizes = [...new Set(group.items.map((item) => item.size || "Unico"))].sort(compareSizes);
+    group.colors = [...new Set(group.items.map((item) => item.color || "Cor a identificar"))]
+      .sort((a, b) => a.localeCompare(b, "pt-BR", { numeric: true }));
     return group;
   }).sort((a, b) => a.title.localeCompare(b.title, "pt-BR", { numeric: true }));
+}
+
+function folderLabel(product) {
+  return product.folderName || product.folderPath?.split("/")?.[0]?.trim() || product.category || "Produtos";
 }
 
 function compareSizes(a, b) {
@@ -294,7 +356,7 @@ function renderCart() {
       <img src="${item.image}" alt="${escapeHtml(item.title)}" />
       <div>
         <h3>${escapeHtml(item.title)}</h3>
-        <p>${escapeHtml(item.category)} · ${escapeHtml(item.size)} · ${escapeHtml(item.brand)}</p>
+        <p>${escapeHtml(item.category)} · ${escapeHtml(item.size)} · ${escapeHtml(item.color || "Cor a identificar")} · ${escapeHtml(item.brand)}</p>
       </div>
       <button class="icon-link" type="button" data-remove="${item.id}" title="Remover">
         <i data-lucide="trash-2"></i>
@@ -312,7 +374,7 @@ function renderCart() {
   const message = encodeURIComponent([
     "Oi! Quero consultar estes itens:",
     "",
-    ...items.map((item, index) => `${index + 1}. ${item.title} | ${item.category} | Tam. ${item.size} | ${item.brand}\n${item.driveUrl}`)
+    ...items.map((item, index) => `${index + 1}. ${item.title} | ${item.category} | Tam. ${item.size} | Cor: ${item.color || "Cor a identificar"} | ${item.brand}\n${item.driveUrl}`)
   ].join("\n"));
 
   els.whatsappOrder.href = whatsappUrl(message);
@@ -320,6 +382,43 @@ function renderCart() {
   if (window.lucide) {
     window.lucide.createIcons();
   }
+}
+
+function colorSwatch(color) {
+  const normalized = normalizeText(color);
+  const map = {
+    amarelo: "#f5c542",
+    azul: "#2f6fca",
+    bege: "#d8c5a3",
+    branco: "#ffffff",
+    caramelo: "#b9783f",
+    cinza: "#8b9291",
+    dourado: "#d4af37",
+    estampado: "linear-gradient(135deg, #1f7a4d, #f5c542, #2f6fca)",
+    laranja: "#f08a24",
+    lilas: "#b592d6",
+    marrom: "#6f4e37",
+    nude: "#d7b7a3",
+    preto: "#111413",
+    rosa: "#e68aaa",
+    roxo: "#7446a8",
+    verde: "#1f7a4d",
+    vermelho: "#c0392b",
+    vinho: "#7b1e35"
+  };
+
+  const value = map[normalized] || "#dce2dd";
+  return value.startsWith("linear-gradient")
+    ? `background: ${value}`
+    : `background: ${value}`;
+}
+
+function normalizeText(value) {
+  return String(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLowerCase();
 }
 
 function openCart() {

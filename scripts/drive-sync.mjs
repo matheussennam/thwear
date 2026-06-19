@@ -86,20 +86,24 @@ function buildProduct(file, path) {
   const category = inferCategory(path);
   const size = inferSize(path) || "Unico";
   const brand = inferBrand(path) || "A identificar";
+  const color = inferColor([...path, file.name]) || "Cor a identificar";
   const title = inferTitle(category, brand);
 
   return {
-    id: slug([category, brand, size, file.id].join("-")),
+    id: slug([category, brand, size, color, file.id].join("-")),
     title,
     category,
     brand,
     size,
+    color,
     price: null,
     status: "available",
     confidence: "path",
     driveFileId: file.id,
+    fileName: file.name,
     driveUrl: file.webViewLink || `https://drive.google.com/file/d/${file.id}/view`,
     image: `https://drive.google.com/thumbnail?id=${file.id}&sz=w900`,
+    folderName: path[0] || category,
     folderPath: path.join(" / "),
     createdTime: file.createdTime,
     modifiedTime: file.modifiedTime
@@ -142,6 +146,41 @@ function inferBrand(path) {
   const joined = normalize(path.join(" "));
   const brands = ["Farm", "Premium", "Ralph Lauren", "Lacoste", "Tommy", "Nike", "Adidas"];
   return brands.find((brand) => joined.includes(normalize(brand))) || "";
+}
+
+function inferColor(parts) {
+  const joined = ` ${normalize(parts.join(" "))} `;
+  const colors = [
+    ["Azul marinho", ["azul marinho", "marinho"]],
+    ["Verde militar", ["verde militar", "militar"]],
+    ["Off white", ["off white", "off-white"]],
+    ["Branco", ["branco", "branca", "white"]],
+    ["Preto", ["preto", "preta", "black"]],
+    ["Cinza", ["cinza", "chumbo", "grafite", "gray", "grey"]],
+    ["Azul", ["azul", "blue"]],
+    ["Verde", ["verde", "green"]],
+    ["Vermelho", ["vermelho", "vermelha", "red"]],
+    ["Vinho", ["vinho", "bordo", "bordô", "burgundy"]],
+    ["Rosa", ["rosa", "pink"]],
+    ["Roxo", ["roxo", "roxa", "purple"]],
+    ["Lilas", ["lilas", "lilás"]],
+    ["Amarelo", ["amarelo", "amarela", "yellow"]],
+    ["Laranja", ["laranja", "orange"]],
+    ["Bege", ["bege", "beige"]],
+    ["Nude", ["nude"]],
+    ["Marrom", ["marrom", "brown"]],
+    ["Caramelo", ["caramelo", "caramel"]],
+    ["Dourado", ["dourado", "dourada", "gold"]],
+    ["Estampado", ["estampado", "estampada", "floral", "listrado", "listrada", "xadrez"]]
+  ];
+
+  for (const [label, aliases] of colors) {
+    if (aliases.some((alias) => joined.includes(` ${normalize(alias)} `))) {
+      return label;
+    }
+  }
+
+  return "";
 }
 
 function inferTitle(category, brand) {
