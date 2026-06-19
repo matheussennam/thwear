@@ -3,7 +3,7 @@
     "provider": "Google Drive",
     "rootFolderId": "1E6XqPMoxn-xq36Kf4wVkYW3JlupTyjIU",
     "rootUrl": "https://drive.google.com/drive/folders/1E6XqPMoxn-xq36Kf4wVkYW3JlupTyjIU",
-    "syncedAt": "2026-06-19T15:57:27.309Z",
+    "syncedAt": "2026-06-19T17:52:40.645Z",
     "note": "Gerado automaticamente pelo sync do catalogo."
   },
   "priceRules": [
@@ -49,6 +49,46 @@
     }
   ],
   "products": [
+    {
+      "id": "camisa-polo-a-identificar-m-azul-1fglspo8emfziu-zfwehky2ydycc4vtyf",
+      "title": "Camisa polo",
+      "category": "Camisa polo",
+      "brand": "A identificar",
+      "size": "M",
+      "color": "Azul",
+      "colorSource": "imagem",
+      "price": 99.9,
+      "status": "available",
+      "confidence": "path",
+      "driveFileId": "1fGlsPO8emfziu-zFwEHKy2YDYCC4VtyF",
+      "fileName": "20260429_175537.jpg",
+      "driveUrl": "https://drive.google.com/file/d/1fGlsPO8emfziu-zFwEHKy2YDYCC4VtyF/view?usp=drivesdk",
+      "image": "https://drive.google.com/thumbnail?id=1fGlsPO8emfziu-zFwEHKy2YDYCC4VtyF&sz=w900",
+      "folderName": "CAMISAS POLO ",
+      "folderPath": "CAMISAS POLO  / POLO M",
+      "createdTime": "2026-06-19T16:29:45.467Z",
+      "modifiedTime": "2026-06-19T16:29:45.485Z"
+    },
+    {
+      "id": "calca-alfaiataria-a-identificar-42-cinza-1ph2ccq1kljbqqg-nolwcllq4-yu5vxye",
+      "title": "Calca alfaiataria",
+      "category": "Calca alfaiataria",
+      "brand": "A identificar",
+      "size": "42",
+      "color": "Cinza",
+      "colorSource": "imagem",
+      "price": 129.9,
+      "status": "available",
+      "confidence": "path",
+      "driveFileId": "1PH2cCQ1klJbqqg-NOLWcllQ4_Yu5VXye",
+      "fileName": "PhotoGrid_Plus_1765473303603.jpg",
+      "driveUrl": "https://drive.google.com/file/d/1PH2cCQ1klJbqqg-NOLWcllQ4_Yu5VXye/view?usp=drivesdk",
+      "image": "https://drive.google.com/thumbnail?id=1PH2cCQ1klJbqqg-NOLWcllQ4_Yu5VXye&sz=w900",
+      "folderName": "CALÇAS DE ALFAIATARIA ",
+      "folderPath": "CALÇAS DE ALFAIATARIA  / CALÇAS 42",
+      "createdTime": "2026-06-19T16:28:12.787Z",
+      "modifiedTime": "2026-06-19T16:28:12.818Z"
+    },
     {
       "id": "camisa-premium-premium-m-cinza-1twykszokrplvhllbc-qwz7k1t99hgozr",
       "title": "Camisa premium",
@@ -2748,26 +2788,6 @@
       "folderPath": "CALÇAS DE ALFAIATARIA  / CALÇAS 38",
       "createdTime": "2026-06-10T10:07:12.874Z",
       "modifiedTime": "2026-06-10T10:07:12.887Z"
-    },
-    {
-      "id": "calca-alfaiataria-a-identificar-38-preto-1ao7jrdlsm7oplrb9le2xwmp9plrax-k0",
-      "title": "Calca alfaiataria",
-      "category": "Calca alfaiataria",
-      "brand": "A identificar",
-      "size": "38",
-      "color": "Preto",
-      "colorSource": "imagem",
-      "price": 129.9,
-      "status": "available",
-      "confidence": "path",
-      "driveFileId": "1aO7Jrdlsm7OPlRb9Le2XwmP9PlrAX_K0",
-      "fileName": "PhotoGrid_Plus_1765473447659.jpg",
-      "driveUrl": "https://drive.google.com/file/d/1aO7Jrdlsm7OPlRb9Le2XwmP9PlrAX_K0/view?usp=drivesdk",
-      "image": "https://drive.google.com/thumbnail?id=1aO7Jrdlsm7OPlRb9Le2XwmP9PlrAX_K0&sz=w900",
-      "folderName": "CALÇAS DE ALFAIATARIA ",
-      "folderPath": "CALÇAS DE ALFAIATARIA  / CALÇAS 38",
-      "createdTime": "2026-06-10T10:07:12.849Z",
-      "modifiedTime": "2026-06-10T10:07:12.861Z"
     },
     {
       "id": "calca-alfaiataria-a-identificar-38-preto-1zczqejb6v54wmhaleppcwt0fdps-wgiq",
