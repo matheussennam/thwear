@@ -148,7 +148,7 @@ function renderCatalog() {
     return;
   }
 
-  els.grid.innerHTML = renderFolders(state.visible);
+  els.grid.innerHTML = state.visible.map(renderProduct).join("");
 
   els.grid.querySelectorAll("[data-add]").forEach((button) => {
     button.addEventListener("click", () => addToCart(button.dataset.add));
@@ -157,23 +157,6 @@ function renderCatalog() {
   if (window.lucide) {
     window.lucide.createIcons();
   }
-}
-
-function renderFolders(groups) {
-  return groupFolders(groups).map((folder) => `
-    <section class="folder-section">
-      <div class="folder-head">
-        <div>
-          <p class="eyebrow">Pasta</p>
-          <h2>${escapeHtml(folder.name)}</h2>
-        </div>
-        <span>${folder.pieces} peca${folder.pieces === 1 ? "" : "s"} · ${folder.groups.length} modelo${folder.groups.length === 1 ? "" : "s"}</span>
-      </div>
-      <div class="folder-grid">
-        ${folder.groups.map(renderProduct).join("")}
-      </div>
-    </section>
-  `).join("");
 }
 
 function renderProduct(product) {
@@ -215,6 +198,7 @@ function renderProduct(product) {
       <div class="product-body">
         <h3>${escapeHtml(product.title)}</h3>
         <div class="meta">
+          <span class="chip folder-chip">${escapeHtml(product.folderName)}</span>
           <span class="chip">${escapeHtml(product.category)}</span>
           <span class="chip">${escapeHtml(product.brand)}</span>
         </div>
@@ -240,22 +224,6 @@ function renderProduct(product) {
       </div>
     </article>
   `;
-}
-
-function groupFolders(groups) {
-  const folders = new Map();
-
-  for (const group of groups) {
-    const key = group.folderName || group.category;
-    if (!folders.has(key)) {
-      folders.set(key, { name: key, groups: [], pieces: 0 });
-    }
-    const folder = folders.get(key);
-    folder.groups.push(group);
-    folder.pieces += group.items.length;
-  }
-
-  return [...folders.values()].sort((a, b) => a.name.localeCompare(b.name, "pt-BR", { numeric: true }));
 }
 
 function groupProducts(products) {
