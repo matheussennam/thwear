@@ -4,6 +4,7 @@ const state = {
     whatsappNumber: ""
   },
   products: [],
+  groups: [],
   visible: [],
   cart: new Map(),
   filters: {
@@ -105,7 +106,7 @@ function bindEvents() {
 }
 
 function applyFilters() {
-  state.visible = state.products.filter((product) => {
+  const filteredProducts = state.products.filter((product) => {
     const queryText = [
       product.title,
       product.category,
@@ -122,13 +123,15 @@ function applyFilters() {
     );
   });
 
+  state.groups = groupProducts(filteredProducts);
+  state.visible = state.groups;
   renderMetrics();
   renderCatalog();
 }
 
 function renderMetrics() {
   els.total.textContent = state.products.length;
-  els.visible.textContent = state.visible.length;
+  els.visible.textContent = state.groups.length;
   els.pending.textContent = state.products.filter((product) => product.price === null).length;
 }
 
@@ -150,19 +153,30 @@ function renderCatalog() {
 }
 
 function renderProduct(product) {
+  const cover = product.items[0];
   const price = product.price === null
     ? `<strong class="pending">Consultar preco</strong>`
     : `<strong>${money.format(product.price)}</strong>`;
 
+  const sizes = product.sizes.map((size) => {
+    const item = product.items.find((variant) => variant.size === size);
+    const selected = state.cart.has(item.id) ? " selected" : "";
+    return `
+      <button class="size-pill${selected}" type="button" data-add="${item.id}" title="Separar tamanho ${escapeHtml(size)}">
+        ${escapeHtml(size)}
+      </button>
+    `;
+  }).join("");
+
   const message = encodeURIComponent(
-    `Oi! Tenho interesse neste item:\n\n${product.title}\nCategoria: ${product.category}\nTamanho: ${product.size}\nMarca: ${product.brand}\nLink: ${product.driveUrl}`
+    `Oi! Tenho interesse neste item:\n\n${product.title}\nCategoria: ${product.category}\nTamanhos disponiveis: ${product.sizes.join(", ")}\nMarca: ${product.brand}\nLink: ${cover.driveUrl}`
   );
 
   return `
     <article class="product">
       <div class="image-wrap">
-        <img src="${product.image}" alt="${escapeHtml(product.title)}" loading="lazy" />
-        <span class="badge">${escapeHtml(product.size)}</span>
+        <img src="${cover.image}" alt="${escapeHtml(product.title)}" loading="lazy" />
+        <span class="badge">${product.items.length} peca${product.items.length === 1 ? "" : "s"}</span>
       </div>
       <div class="product-body">
         <h3>${escapeHtml(product.title)}</h3>
@@ -170,22 +184,81 @@ function renderProduct(product) {
           <span class="chip">${escapeHtml(product.category)}</span>
           <span class="chip">${escapeHtml(product.brand)}</span>
         </div>
+        <div class="sizes" aria-label="Tamanhos disponiveis">
+          ${sizes}
+        </div>
         <div class="price">
           ${price}
-          <span class="chip">${product.confidence === "path" ? "Drive" : "IA"}</span>
+          <span class="chip">${product.sizes.length} tamanho${product.sizes.length === 1 ? "" : "s"}</span>
         </div>
         <div class="actions">
           <a class="primary" href="${whatsappUrl(message)}" target="_blank" rel="noreferrer">
             <i data-lucide="message-circle"></i>
             WhatsApp
           </a>
-          <button class="secondary" type="button" data-add="${product.id}" title="Separar item">
+          <button class="secondary" type="button" data-add="${cover.id}" title="Separar primeira opcao">
             <i data-lucide="plus"></i>
           </button>
         </div>
       </div>
     </article>
   `;
+}
+
+function groupProducts(products) {
+  const groups = new Map();
+
+  for (const product of products) {
+    const key = [
+      product.category,
+      product.brand,
+      product.folderPath.split("/")[0]?.trim() || product.title
+    ].join("|");
+
+    if (!groups.has(key)) {
+      groups.set(key, {
+        id: key,
+        title: product.title,
+        category: product.category,
+        brand: product.brand,
+        price: product.price,
+        items: [],
+        sizes: []
+      });
+    }
+
+    groups.get(key).items.push(product);
+  }
+
+  return [...groups.values()].map((group) => {
+    group.items.sort((a, b) => {
+      const sizeSort = compareSizes(a.size, b.size);
+      if (sizeSort !== 0) return sizeSort;
+      return new Date(b.createdTime || 0) - new Date(a.createdTime || 0);
+    });
+    group.sizes = [...new Set(group.items.map((item) => item.size || "Unico"))].sort(compareSizes);
+    return group;
+  }).sort((a, b) => a.title.localeCompare(b.title, "pt-BR", { numeric: true }));
+}
+
+function compareSizes(a, b) {
+  const order = ["PP", "P", "M", "G", "GG", "XG", "XXL", "Unico"];
+  const aText = String(a);
+  const bText = String(b);
+  const aNum = Number(aText);
+  const bNum = Number(bText);
+
+  if (Number.isFinite(aNum) && Number.isFinite(bNum)) return aNum - bNum;
+  if (Number.isFinite(aNum)) return -1;
+  if (Number.isFinite(bNum)) return 1;
+
+  const aIndex = order.indexOf(aText);
+  const bIndex = order.indexOf(bText);
+  if (aIndex !== -1 || bIndex !== -1) {
+    return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex);
+  }
+
+  return aText.localeCompare(bText, "pt-BR", { numeric: true });
 }
 
 function addToCart(productId) {
@@ -208,7 +281,7 @@ function renderCart() {
 
   if (!items.length) {
     els.cartList.innerHTML = `<div class="empty">Nenhum item separado.</div>`;
-  els.whatsappOrder.href = "https://wa.me/";
+    els.whatsappOrder.href = "https://wa.me/";
     return;
   }
 

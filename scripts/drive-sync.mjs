@@ -109,8 +109,14 @@ function buildProduct(file, path) {
 function inferCategory(path) {
   const joined = normalize(path.join(" "));
 
+  if (joined.includes("perfume")) return "Perfume";
+  if (joined.includes("camisa social")) return "Camisa social";
+  if (joined.includes("camisa feminina") || joined.includes("farm")) return "Camisa feminina";
+  if (joined.includes("camisa premium") || joined.includes("camisas premium")) return "Camisa premium";
   if (joined.includes("polo")) return "Camisa polo";
   if (joined.includes("jeans")) return "Calca jeans";
+  if (joined.includes("alfaiataria")) return "Calca alfaiataria";
+  if (joined.includes("sarja") && joined.includes("calca")) return "Calca sarja";
   if (joined.includes("sueter")) return "Sueter";
   if (joined.includes("regata")) return "Regata";
   if (joined.includes("cueca")) return "Cueca premium";
@@ -149,11 +155,17 @@ function inferTitle(category, brand) {
 function defaultPriceRules() {
   return [
     { category: "Camiseta / Camisa", price: null },
+    { category: "Camisa premium", price: null },
     { category: "Camisa polo", price: null },
+    { category: "Camisa social", price: null },
+    { category: "Camisa feminina", price: null },
     { category: "Calca jeans", price: null },
+    { category: "Calca sarja", price: null },
+    { category: "Calca alfaiataria", price: null },
     { category: "Sueter", price: null },
     { category: "Regata", price: null },
-    { category: "Cueca premium", price: null }
+    { category: "Cueca premium", price: null },
+    { category: "Perfume", price: null }
   ];
 }
 
