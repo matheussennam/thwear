@@ -164,6 +164,7 @@ function renderProduct(product) {
   const price = product.price === null
     ? `<strong class="pending">Consultar preco</strong>`
     : `<strong>${money.format(product.price)}</strong>`;
+  const priceMessage = product.price === null ? "Consultar preco" : money.format(product.price);
 
   const sizes = product.sizes.map((size) => {
     const item = product.items.find((variant) => variant.size === size);
@@ -186,7 +187,7 @@ function renderProduct(product) {
   }).join("");
 
   const message = encodeURIComponent(
-    `Oi! Tenho interesse neste item:\n\n${product.title}\nCategoria: ${product.category}\nTamanhos disponiveis: ${product.sizes.join(", ")}\nCores: ${product.colors.join(", ")}\nMarca: ${product.brand}\nLink: ${cover.driveUrl}`
+    `Oi! Tenho interesse neste item:\n\n${product.title}\nCategoria: ${product.category}\nPreco: ${priceMessage}\nTamanhos disponiveis: ${product.sizes.join(", ")}\nCores: ${product.colors.join(", ")}\nMarca: ${product.brand}\nLink: ${cover.driveUrl}`
   );
 
   return `
@@ -342,7 +343,10 @@ function renderCart() {
   const message = encodeURIComponent([
     "Oi! Quero consultar estes itens:",
     "",
-    ...items.map((item, index) => `${index + 1}. ${item.title} | ${item.category} | Tam. ${item.size} | Cor: ${item.color || "Cor a identificar"} | ${item.brand}\n${item.driveUrl}`)
+    ...items.map((item, index) => {
+      const price = item.price === null ? "Consultar preco" : money.format(item.price);
+      return `${index + 1}. ${item.title} | ${item.category} | ${price} | Tam. ${item.size} | Cor: ${item.color || "Cor a identificar"} | ${item.brand}\n${item.driveUrl}`;
+    })
   ].join("\n"));
 
   els.whatsappOrder.href = whatsappUrl(message);

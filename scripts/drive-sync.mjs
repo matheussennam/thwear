@@ -5,6 +5,18 @@ import jpeg from "jpeg-js";
 const API = "https://www.googleapis.com/drive/v3/files";
 const IMAGE_MIME_PREFIX = "image/";
 const IMAGE_COLOR_CONCURRENCY = 8;
+const PRICE_RULES = [
+  { label: "Camisas polo", price: 99.9, matches: ["camisa polo", "camisas polo", "polo"] },
+  { label: "Camisas premium", price: 79.9, matches: ["camisa premium", "camisas premium"] },
+  { label: "Bermudas sarja", price: 99.9, matches: ["bermudas de sarja", "bermuda sarja"] },
+  { label: "Shorts sarja e linho", price: 85, matches: ["short de sarja", "shorts sarja", "short de linho", "shorts linho"] },
+  { label: "Camisa regata", price: 69.9, matches: ["regata", "camisa regata"] },
+  { label: "Calca alfaiataria e jeans", price: 129.9, matches: ["calca alfaiataria", "calcas de alfaiataria", "calca jeans", "calcas jeans"] },
+  { label: "Calca sarja", price: 119.9, matches: ["calca sarja", "calcas de sarja"] },
+  { label: "Camisa social", price: 129.9, matches: ["camisa social"] },
+  { label: "Camisa feminina Farm", price: 79.9, matches: ["camisa feminina", "camisa femina", "farm"] },
+  { label: "Sueter", price: 115, matches: ["sueter"] }
+];
 
 const args = parseArgs(process.argv.slice(2));
 const token = await getDriveAccessToken();
@@ -89,6 +101,7 @@ async function buildProduct(file, path) {
   const visualColor = textColor ? "" : await inferVisualColor(file.id);
   const color = textColor || visualColor || "Cor a identificar";
   const title = inferTitle(category, brand);
+  const folderName = path[0] || category;
 
   return {
     id: slug([category, brand, size, color, file.id].join("-")),
@@ -98,14 +111,14 @@ async function buildProduct(file, path) {
     size,
     color,
     colorSource: textColor ? "texto" : visualColor ? "imagem" : "indefinida",
-    price: null,
+    price: inferPrice({ category, title, brand, folderName, folderPath: path.join(" / ") }),
     status: "available",
     confidence: "path",
     driveFileId: file.id,
     fileName: file.name,
     driveUrl: file.webViewLink || `https://drive.google.com/file/d/${file.id}/view`,
     image: `https://drive.google.com/thumbnail?id=${file.id}&sz=w900`,
-    folderName: path[0] || category,
+    folderName,
     folderPath: path.join(" / "),
     createdTime: file.createdTime,
     modifiedTime: file.modifiedTime
@@ -297,20 +310,20 @@ function inferTitle(category, brand) {
 }
 
 function defaultPriceRules() {
-  return [
-    { category: "Camiseta / Camisa", price: null },
-    { category: "Camisa premium", price: null },
-    { category: "Camisa polo", price: null },
-    { category: "Camisa social", price: null },
-    { category: "Camisa feminina", price: null },
-    { category: "Calca jeans", price: null },
-    { category: "Calca sarja", price: null },
-    { category: "Calca alfaiataria", price: null },
-    { category: "Sueter", price: null },
-    { category: "Regata", price: null },
-    { category: "Cueca premium", price: null },
-    { category: "Perfume", price: null }
-  ];
+  return PRICE_RULES.map(({ label, price }) => ({ label, price }));
+}
+
+function inferPrice(product) {
+  const text = normalize([
+    product.folderName,
+    product.folderPath,
+    product.category,
+    product.title,
+    product.brand
+  ].join(" "));
+
+  const rule = PRICE_RULES.find((item) => item.matches.some((match) => text.includes(normalize(match))));
+  return rule?.price ?? null;
 }
 
 async function writeJson(path, data) {
