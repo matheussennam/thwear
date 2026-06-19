@@ -3,7 +3,7 @@
     "provider": "Google Drive",
     "rootFolderId": "1E6XqPMoxn-xq36Kf4wVkYW3JlupTyjIU",
     "rootUrl": "https://drive.google.com/drive/folders/1E6XqPMoxn-xq36Kf4wVkYW3JlupTyjIU",
-    "syncedAt": "2026-06-19T17:52:40.645Z",
+    "syncedAt": "2026-06-19T19:27:27.495Z",
     "note": "Gerado automaticamente pelo sync do catalogo."
   },
   "priceRules": [
@@ -8410,26 +8410,6 @@
       "modifiedTime": "2026-04-02T02:18:20.147Z"
     },
     {
-      "id": "camisa-feminina-farm-p-laranja-1ulnudazamsmy1pwyxd2kelo9py-o-cmn",
-      "title": "Camisa feminina Farm",
-      "category": "Camisa feminina",
-      "brand": "Farm",
-      "size": "P",
-      "color": "Laranja",
-      "colorSource": "imagem",
-      "price": 79.9,
-      "status": "available",
-      "confidence": "path",
-      "driveFileId": "1ulNUdazAmsMy1PwyXD2KelO9py-O_Cmn",
-      "fileName": "IMG-20260325-WA0230.jpg",
-      "driveUrl": "https://drive.google.com/file/d/1ulNUdazAmsMy1PwyXD2KelO9py-O_Cmn/view?usp=drivesdk",
-      "image": "https://drive.google.com/thumbnail?id=1ulNUdazAmsMy1PwyXD2KelO9py-O_Cmn&sz=w900",
-      "folderName": "CAMISA FEMINA FARM",
-      "folderPath": "CAMISA FEMINA FARM / FARM P",
-      "createdTime": "2026-04-02T02:18:20.052Z",
-      "modifiedTime": "2026-04-02T02:18:20.058Z"
-    },
-    {
       "id": "camisa-feminina-farm-p-laranja-13b-hfijmrnbzyqbvix2nbl0fcii9fntq",
       "title": "Camisa feminina Farm",
       "category": "Camisa feminina",
@@ -8468,26 +8448,6 @@
       "folderPath": "CAMISA FEMINA FARM / FARM P",
       "createdTime": "2026-04-02T02:18:19.926Z",
       "modifiedTime": "2026-04-02T02:18:19.932Z"
-    },
-    {
-      "id": "camisa-feminina-farm-p-laranja-1l0akwm3pm7qtzgznrj-pdkzsipazij-o",
-      "title": "Camisa feminina Farm",
-      "category": "Camisa feminina",
-      "brand": "Farm",
-      "size": "P",
-      "color": "Laranja",
-      "colorSource": "imagem",
-      "price": 79.9,
-      "status": "available",
-      "confidence": "path",
-      "driveFileId": "1l0AKwm3pM7qtzGzNRJ_pDKZsIPaziJ-o",
-      "fileName": "IMG-20260327-WA0033.jpg",
-      "driveUrl": "https://drive.google.com/file/d/1l0AKwm3pM7qtzGzNRJ_pDKZsIPaziJ-o/view?usp=drivesdk",
-      "image": "https://drive.google.com/thumbnail?id=1l0AKwm3pM7qtzGzNRJ_pDKZsIPaziJ-o&sz=w900",
-      "folderName": "CAMISA FEMINA FARM",
-      "folderPath": "CAMISA FEMINA FARM / FARM P",
-      "createdTime": "2026-04-02T02:18:19.902Z",
-      "modifiedTime": "2026-04-02T02:18:19.912Z"
     },
     {
       "id": "camisa-feminina-farm-p-laranja-1biey3yltqn4ht0hwifyyokvnjtdnbd0z",
@@ -12608,26 +12568,6 @@
       "folderPath": "CAMISAS PREMIUM  / PREMIUM P",
       "createdTime": "2025-12-03T03:40:52.903Z",
       "modifiedTime": "2025-12-03T03:40:52.911Z"
-    },
-    {
-      "id": "regata-a-identificar-m-preto-1hknzvxsta59kwwhcevfkm4mkmfgfi1eg",
-      "title": "Regata",
-      "category": "Regata",
-      "brand": "A identificar",
-      "size": "M",
-      "color": "Preto",
-      "colorSource": "imagem",
-      "price": 69.9,
-      "status": "available",
-      "confidence": "path",
-      "driveFileId": "1HkNzVxsTA59KWwhcEVFkm4MKmFgfi1eG",
-      "fileName": "IMG-20251201-WA0194.jpg",
-      "driveUrl": "https://drive.google.com/file/d/1HkNzVxsTA59KWwhcEVFkm4MKmFgfi1eG/view?usp=drivesdk",
-      "image": "https://drive.google.com/thumbnail?id=1HkNzVxsTA59KWwhcEVFkm4MKmFgfi1eG&sz=w900",
-      "folderName": "REGATAS",
-      "folderPath": "REGATAS / REGATAS M",
-      "createdTime": "2025-12-01T22:27:59.892Z",
-      "modifiedTime": "2025-12-01T22:27:59.900Z"
     },
     {
       "id": "regata-a-identificar-m-cinza-1pwarn0tgkrpvy9yfq49gtqnaq-k-w-yq",
